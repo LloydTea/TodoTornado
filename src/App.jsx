@@ -10,6 +10,7 @@ import {
   Row,
 } from "react-bootstrap";
 import "src/scss/styles.scss";
+import "src/App.css";
 
 function App() {
   const [listOfList, setListOfList] = useState([]);

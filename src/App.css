@@ -1,3 +1,7 @@
 .todoContainter {
     min-height: 700px;
 }
+
+*{
+    font-family: 'DM Mono', monospace;
+}
