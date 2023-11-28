@@ -9,7 +9,7 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import "src/scss/styles.scss";
+import "../build/styles.css";
 
 function App() {
   const [listOfList, setListOfList] = useState([]);
@@ -20,7 +20,6 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("todoList", JSON.stringify(todoList));
-    console.log(JSON.parse(localStorage.getItem("todoList")));
   }, [todoList]);
 
   useEffect(() => {
@@ -51,7 +50,6 @@ function App() {
       setTodoList(updatedTodoList);
       setNewTask("");
     }
-    // console.log(todoList);
   };
 
   return (
