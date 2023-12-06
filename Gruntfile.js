@@ -31,7 +31,7 @@ module.exports = function (grunt) {
         implementation: sass,
         sourceMap: true,
       },
-      // Task
+
       build: {
         files: [
           {
