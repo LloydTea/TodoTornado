@@ -1,7 +1,39 @@
+
+.sidebar {
+    max-width: 100%;
+    width: 330px;
+    overflow-y: scroll;
+}
 .todoContainter {
-    min-height: 700px;
+    min-height: 100vh;
+    flex-grow: 1;
 }
 
 *{
     font-family: 'DM Mono', monospace;
+}
+.task:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 768px){
+    .mainContainer{
+        display: flex;
+    }
+    .sidebar {
+        max-width: 100%;
+        width: 70px;
+    }
+    .sidebar.closeTaskList .task{
+        display: none;
+    }
+
+    .sidebar.openTaskList{
+        width: 80%;
+        position: absolute;
+        z-index: 9999;
+    }
+
+    .sidebar.openTaskList .task{
+        font-size: 10px;
+    }
 }

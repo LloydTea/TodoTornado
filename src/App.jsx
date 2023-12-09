@@ -12,30 +12,36 @@ import {
 import "../build/styles.css";
 
 function App() {
-  const [listOfList, setListOfList] = useState([]);
   const [todoTitle, setTodoTitle] = useState(null);
   const [newTask, setNewTask] = useState(null);
   const [currentTodoList, setCurrentTodoList] = useState(null);
-  const [todoList, setTodoList] = useState({});
+  const [openSideBar, setOpenSideBar] = useState(false);
+  const [todoList, setTodoList] = useState(() => {
+    const savedTodoList = JSON.parse(localStorage.getItem("todoList"));
+    return savedTodoList || {};
+  });
+  const [listOfList, setListOfList] = useState(() => {
+    const listoflist = [];
+    for (let i = 0; i < Object.keys(todoList).length; i++) {
+      listoflist.push(Object.keys(todoList)[i]);
+    }
+    return listoflist || [];
+  });
 
   useEffect(() => {
     localStorage.setItem("todoList", JSON.stringify(todoList));
+    console.log(`Saved ${localStorage.getItem("todoList")}`);
   }, [todoList]);
-
-  useEffect(() => {
-    const savedTodoList = JSON.parse(localStorage.getItem("todoList"));
-    if (savedTodoList) {
-      setTodoList(savedTodoList);
-    }
-  }, []);
 
   const addNewTodoList = () => {
     const updatedList = [...listOfList];
     if (!todoList[todoTitle]) {
       updatedList.push(todoTitle);
       setListOfList(updatedList);
-      setTodoList({ ...todoList, [todoTitle]: [] });
+      const updatedTodoList = { ...todoList, [todoTitle]: [] }; // Keep existing structure and add new todo list
+      setTodoList(updatedTodoList);
     }
+
     setCurrentTodoList(todoTitle);
     setTodoTitle("");
   };
@@ -52,6 +58,18 @@ function App() {
     }
   };
 
+  const updateTaskStatus = (index, e) => {
+    const updatedTodoList = [...todoList[currentTodoList]]; // Create a new copy of the tasks array
+    updatedTodoList[index].status = e.target.checked ? "done" : "undone";
+
+    const updatedList = { ...todoList };
+    updatedList[currentTodoList] = updatedTodoList; // Update the specific todo list
+
+    setTodoList(updatedList);
+  };
+  const taskMenuController = () => {
+    setOpenSideBar(!openSideBar);
+  };
   return (
     <>
       <Container className='my-4'>
@@ -63,6 +81,9 @@ function App() {
                   type='text'
                   value={todoTitle || ""}
                   onChange={(e) => setTodoTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.key === "Enter" ? addNewTodoList() : null;
+                  }}
                   placeholder='Todo List Title'></FormControl>
               </FloatingLabel>
               <Button className='btn btn-primary px-3' onClick={addNewTodoList}>
@@ -72,66 +93,99 @@ function App() {
           </Col>
         </Row>
         <Row className='justify-content-center'>
-          <Col
-            md={3}
-            className='border rounded-start p-0 bg-dark text-white text-start'>
-            {listOfList.map((title, index) =>
-              index < listOfList.length - 1 ? (
-                <div
-                  key={index}
-                  className={`fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
-                    title === currentTodoList ? "bg-white bg-opacity-10" : ""
-                  }`}>
-                  {title}
-                  <Button
-                    onClick={() => setCurrentTodoList(title)}
-                    className='stretched-link position-absolute end-0 me-3'>
-                    <i className='bi bi-arrow-right-circle'></i>
-                  </Button>
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className={`fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
-                    title === currentTodoList ? "bg-white bg-opacity-10" : ""
-                  }`}>
-                  {title}
-                  <Button
-                    onClick={() => setCurrentTodoList(title)}
-                    className='stretched-link position-absolute end-0 me-3'>
-                    <i className='bi bi-arrow-right-circle'></i>
-                  </Button>
-                </div>
-              )
-            )}
-          </Col>
-          <Col md={6} className='todoContainter border p-3 rounded-end'>
-            {currentTodoList !== null ? (
-              <>
-                <InputGroup className='mb-3'>
-                  <FloatingLabel controlId='newTask' label='Enter New Task'>
-                    <FormControl
-                      type='text'
-                      value={newTask || ""}
-                      onChange={(e) => setNewTask(e.target.value)}
-                      placeholder='Enter New Task'></FormControl>
-                  </FloatingLabel>
-                  <Button className='btn btn-primary px-3' onClick={addNewTask}>
-                    Add List <i className='bi bi-plus-circle'></i>
-                  </Button>
-                </InputGroup>
-                {todoList[currentTodoList].map((task, index) => (
-                  <div key={index} className='fs-5 mb-3'>
-                    <FormCheck
-                      type='checkbox'
-                      checked={task.status === "done" ? true : false}
-                      onChange={() => (task.status = "done")}
-                      id={`${task.task}_${index}`}
-                      label={task.task}></FormCheck>
+          <Col md={10} className={`d-md-flex rounded mainContainer`}>
+            <div
+              className={`border p-0 bg-dark text-white text-start sidebar h-100 ${
+                !openSideBar ? "closeTaskList" : "openTaskList"
+              }`}>
+              <div
+                className={`p-2 d-md-none ${
+                  !openSideBar ? "text-center" : "text-end"
+                }`}>
+                <Button
+                  variant='outline-primary'
+                  onClick={taskMenuController}
+                  className='text-white'>
+                  <i
+                    className={`${
+                      !openSideBar ? "bi bi-menu-button-wide" : "bi bi-x-lg"
+                    }`}></i>
+                </Button>
+              </div>
+              {listOfList.map((title, index) =>
+                index < listOfList.length - 1 ? (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setOpenSideBar(!openSideBar);
+                      setCurrentTodoList(title);
+                    }}
+                    style={{ textOverflow: "ellipsis" }}
+                    className={`task fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
+                      title === currentTodoList ? "bg-white bg-opacity-10" : ""
+                    }`}>
+                    {title}
+                    <Button
+                      className='stretched-link position-absolute end-0 me-3'
+                      style={{ marginTop: "-4px" }}>
+                      <i className='bi bi-arrow-right-circle'></i>
+                    </Button>
                   </div>
-                ))}
-              </>
-            ) : null}
+                ) : (
+                  <div
+                    key={index}
+                    style={{ textOverflow: "ellipsis" }}
+                    onClick={() => {
+                      setOpenSideBar(!openSideBar);
+                      setCurrentTodoList(title);
+                    }}
+                    className={`task fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
+                      title === currentTodoList ? "bg-white bg-opacity-10" : ""
+                    }`}>
+                    {title}
+                    <Button
+                      className='stretched-link position-absolute end-0 me-3'
+                      style={{ marginTop: "-4px" }}>
+                      <i className='bi bi-arrow-right-circle'></i>
+                    </Button>
+                  </div>
+                )
+              )}
+            </div>
+            <div className='todoContainter border p-3 h-100'>
+              {currentTodoList !== null ? (
+                <>
+                  <InputGroup className='mb-3'>
+                    <FloatingLabel controlId='newTask' label='Enter New Task'>
+                      <FormControl
+                        type='text'
+                        value={newTask || ""}
+                        onChange={(e) => setNewTask(e.target.value)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" ? addNewTask() : null
+                        }
+                        placeholder='Enter New Task'></FormControl>
+                    </FloatingLabel>
+                    <Button
+                      className='btn btn-primary px-3'
+                      onClick={addNewTask}>
+                      <span className='d-none d-md-inline'>Add List</span>
+                      <i className='bi bi-plus-circle'></i>
+                    </Button>
+                  </InputGroup>
+                  {todoList[currentTodoList].map((task, index) => (
+                    <div key={index} className='fs-5 mb-3'>
+                      <FormCheck
+                        type='checkbox'
+                        checked={task.status === "done" || false}
+                        onChange={(e) => updateTaskStatus(index, e)}
+                        id={`${task.task}_${index}`}
+                        label={`${task.task}`}></FormCheck>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+            </div>
           </Col>
         </Row>
       </Container>
