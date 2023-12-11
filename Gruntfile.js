@@ -17,12 +17,7 @@ module.exports = function (grunt) {
         options: {
           sourceMap: true,
         },
-        src: [
-          "src/css/style.css",
-          "src/css/bootstrap.css",
-          "src/css/bootstrap-icon.css",
-          "src/css/App.css",
-        ],
+        src: ["src/css/style.css", "src/css/App.css"],
         dest: "build/styles.css",
       },
     },
@@ -37,14 +32,6 @@ module.exports = function (grunt) {
           {
             src: "src/scss/style.scss",
             dest: "src/css/style.css",
-          },
-          {
-            src: "node_modules/bootstrap/scss/bootstrap.scss",
-            dest: "src/css/bootstrap.css",
-          },
-          {
-            src: "./node_modules/bootstrap-icons/font/bootstrap-icons.scss",
-            dest: "src/css/bootstrap-icon.css",
           },
         ],
       },

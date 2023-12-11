@@ -95,64 +95,44 @@ function App() {
         <Row className='justify-content-center'>
           <Col md={10} className={`d-md-flex rounded mainContainer`}>
             <div
-              className={`border p-0 bg-dark text-white text-start sidebar h-100 ${
+              className={`border rounded-start p-0 bg-dark text-white text-start sidebar h-100 ${
                 !openSideBar ? "closeTaskList" : "openTaskList"
               }`}>
               <div
                 className={`p-2 d-md-none ${
                   !openSideBar ? "text-center" : "text-end"
                 }`}>
-                <Button
-                  variant='outline-primary'
-                  onClick={taskMenuController}
-                  className='text-white'>
+                <Button variant='outline-primary' onClick={taskMenuController}>
                   <i
                     className={`${
                       !openSideBar ? "bi bi-menu-button-wide" : "bi bi-x-lg"
                     }`}></i>
                 </Button>
               </div>
-              {listOfList.map((title, index) =>
-                index < listOfList.length - 1 ? (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setOpenSideBar(!openSideBar);
-                      setCurrentTodoList(title);
-                    }}
-                    style={{ textOverflow: "ellipsis" }}
-                    className={`task fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
-                      title === currentTodoList ? "bg-white bg-opacity-10" : ""
-                    }`}>
-                    {title}
-                    <Button
-                      className='stretched-link position-absolute end-0 me-3'
-                      style={{ marginTop: "-4px" }}>
-                      <i className='bi bi-arrow-right-circle'></i>
-                    </Button>
-                  </div>
-                ) : (
-                  <div
-                    key={index}
-                    style={{ textOverflow: "ellipsis" }}
-                    onClick={() => {
-                      setOpenSideBar(!openSideBar);
-                      setCurrentTodoList(title);
-                    }}
-                    className={`task fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
-                      title === currentTodoList ? "bg-white bg-opacity-10" : ""
-                    }`}>
-                    {title}
-                    <Button
-                      className='stretched-link position-absolute end-0 me-3'
-                      style={{ marginTop: "-4px" }}>
-                      <i className='bi bi-arrow-right-circle'></i>
-                    </Button>
-                  </div>
-                )
-              )}
+              {listOfList.map((title, index) => (
+                <div
+                  key={index}
+                  style={{ textOverflow: "ellipsis" }}
+                  onClick={() => {
+                    openSideBar ? setOpenSideBar(!openSideBar) : null;
+                    setCurrentTodoList(title);
+                  }}
+                  className={`fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
+                    title === currentTodoList ? "bg-white bg-opacity-10" : ""
+                  }`}>
+                  <span className='hideOnExpand d-md-none border border-white rounded p-1'>
+                    {title.slice(0, 2).toUpperCase()}
+                  </span>
+                  <span className='task'>{title}</span>
+                  <Button
+                    className='task position-absolute end-0 me-3'
+                    style={{ marginTop: "-4px" }}>
+                    <i className='bi bi-arrow-right-circle'></i>
+                  </Button>
+                </div>
+              ))}
             </div>
-            <div className='todoContainter border p-3 h-100'>
+            <div className='todoContainter rounded-end border p-3 h-100'>
               {currentTodoList !== null ? (
                 <>
                   <InputGroup className='mb-3'>

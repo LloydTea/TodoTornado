@@ -21,9 +21,9 @@
     }
     .sidebar {
         max-width: 100%;
-        width: 70px;
+        width: 75px;
     }
-    .sidebar.closeTaskList .task{
+    .sidebar.closeTaskList .task, .sidebar.openTaskList .hideOnExpand{
         display: none;
     }
 
@@ -31,9 +31,5 @@
         width: 80%;
         position: absolute;
         z-index: 9999;
-    }
-
-    .sidebar.openTaskList .task{
-        font-size: 10px;
     }
 }
