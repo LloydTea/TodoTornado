@@ -15481,6 +15481,15 @@ textarea.form-control-lg {
 .task:hover{
     background-color: rgba(0, 0, 0, 0.1);
 }
+button.hover-text:hover {
+    color: white;
+    background-color: rgba(0, 0, 0) !important;
+}
+
+.form-check-input:checked {
+    background-color: #90fcdc00;
+}
+
 @media (max-width: 768px){
     .mainContainer{
         display: flex;

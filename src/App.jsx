@@ -4,6 +4,7 @@ import {
   Col,
   Container,
   FloatingLabel,
+  Form,
   FormCheck,
   FormControl,
   InputGroup,
@@ -16,10 +17,14 @@ function App() {
   const [newTask, setNewTask] = useState(null);
   const [currentTodoList, setCurrentTodoList] = useState(null);
   const [openSideBar, setOpenSideBar] = useState(false);
+
+  //Load Item From Local Storage..
   const [todoList, setTodoList] = useState(() => {
     const savedTodoList = JSON.parse(localStorage.getItem("todoList"));
     return savedTodoList || {};
   });
+
+  // Collect The List Titles From The Loaded Todo List
   const [listOfList, setListOfList] = useState(() => {
     const listoflist = [];
     for (let i = 0; i < Object.keys(todoList).length; i++) {
@@ -28,6 +33,7 @@ function App() {
     return listoflist || [];
   });
 
+  // Loo
   useEffect(() => {
     localStorage.setItem("todoList", JSON.stringify(todoList));
     console.log(`Saved ${localStorage.getItem("todoList")}`);
@@ -73,6 +79,7 @@ function App() {
   return (
     <>
       <Container className='my-4'>
+        {/* Creating A New Todo List Input And Button */}
         <Row className='justify-content-center'>
           <Col md={6} className='align-self-center'>
             <InputGroup className='mb-3'>
@@ -92,12 +99,17 @@ function App() {
             </InputGroup>
           </Col>
         </Row>
+        {/* Form Ends Here */}
+
+        {/* Todo List Containter Starts Here */}
         <Row className='justify-content-center'>
           <Col md={10} className={`d-md-flex rounded mainContainer`}>
+            {/* Todo List Left Side Navigation Starts Here */}
             <div
               className={`border rounded-start p-0 bg-dark text-white text-start sidebar h-100 ${
                 !openSideBar ? "closeTaskList" : "openTaskList"
               }`}>
+              {/* Mobile Expension Nav Icon For Collapse And Expansion Of Menu Icon */}
               <div
                 className={`p-2 d-md-none ${
                   !openSideBar ? "text-center" : "text-end"
@@ -109,6 +121,8 @@ function App() {
                     }`}></i>
                 </Button>
               </div>
+
+              {/* Listing Of Naviation Items From Stored TodoList */}
               {listOfList.map((title, index) => (
                 <div
                   key={index}
@@ -117,22 +131,24 @@ function App() {
                     openSideBar ? setOpenSideBar(!openSideBar) : null;
                     setCurrentTodoList(title);
                   }}
-                  className={`fs-5 p-3 border-bottom overflow-hidden text-nowrap position-relative ${
+                  className={`fs-5 p-3 pe-md-5 border-bottom overflow-hidden text-nowrap position-relative ${
                     title === currentTodoList ? "bg-white bg-opacity-10" : ""
                   }`}>
+                  {/* Mobile Abbreviation Display First Two Letters */}
                   <span className='hideOnExpand d-md-none border border-white rounded p-1'>
                     {title.slice(0, 2).toUpperCase()}
                   </span>
                   <span className='task'>{title}</span>
                   <Button
-                    className='task position-absolute end-0 me-3'
+                    variant='primary'
+                    className='task position-absolute end-0 me-3 hover-text'
                     style={{ marginTop: "-4px" }}>
                     <i className='bi bi-arrow-right-circle'></i>
                   </Button>
                 </div>
               ))}
             </div>
-            <div className='todoContainter rounded-end border p-3 h-100'>
+            <div className='todoContainter rounded-end border p-3 h-100 bg-dark'>
               {currentTodoList !== null ? (
                 <>
                   <InputGroup className='mb-3'>
@@ -154,13 +170,23 @@ function App() {
                     </Button>
                   </InputGroup>
                   {todoList[currentTodoList].map((task, index) => (
-                    <div key={index} className='fs-5 mb-3'>
-                      <FormCheck
-                        type='checkbox'
-                        checked={task.status === "done" || false}
-                        onChange={(e) => updateTaskStatus(index, e)}
-                        id={`${task.task}_${index}`}
-                        label={`${task.task}`}></FormCheck>
+                    <div key={index} className='fs-5 mb-3 text-white'>
+                      <Form.Check type='checkbox' id={`${task.task}_${index}`}>
+                        <Form.Check.Input
+                          type='checkbox'
+                          checked={task.status === "done" || false}
+                          onChange={(e) =>
+                            updateTaskStatus(index, e)
+                          }></Form.Check.Input>
+                        <Form.Check.Label
+                          className={
+                            task.status === "done"
+                              ? "text-decoration-line-through"
+                              : null
+                          }>
+                          {`${task.task}`}
+                        </Form.Check.Label>
+                      </Form.Check>
                     </div>
                   ))}
                 </>

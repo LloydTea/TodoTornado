@@ -18,7 +18,7 @@ This template provides a minimal setup to get React working in Vite with HMR, Lo
   -[Access Link](https://todo.lloydtea.pro/)
 
 - ### Screenshot
-  ![LloydAI Screenshot](https://github.com/LloydTea/Lloyd-AI-Frontend/blob/development/LloydAI.png)
+  ![TodoList Sreenshot](https://github.com/LloydTea/todolist/blob/main/TodoList.png)
 
 ## Authors
 
