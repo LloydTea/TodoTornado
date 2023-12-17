@@ -8,6 +8,10 @@ import {
   FormCheck,
   FormControl,
   InputGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
 } from "react-bootstrap";
 import "../build/styles.css";
@@ -17,6 +21,8 @@ function App() {
   const [newTask, setNewTask] = useState(null);
   const [currentTodoList, setCurrentTodoList] = useState(null);
   const [openSideBar, setOpenSideBar] = useState(false);
+  const [show, setShow] = useState(false);
+  const [listDeleted, setListDeleted] = useState(false);
 
   //Load Item From Local Storage..
   const [todoList, setTodoList] = useState(() => {
@@ -37,6 +43,15 @@ function App() {
   useEffect(() => {
     localStorage.setItem("todoList", JSON.stringify(todoList));
     console.log(`Saved ${localStorage.getItem("todoList")}`);
+
+    // If A List Get Deleted Refresh The Naviation Item
+    if (listDeleted) {
+      const listoflist = [];
+      for (let i = 0; i < Object.keys(todoList).length; i++) {
+        listoflist.push(Object.keys(todoList)[i]);
+      }
+      setListOfList(listoflist);
+    }
   }, [todoList]);
 
   const addNewTodoList = () => {
@@ -67,12 +82,26 @@ function App() {
   const updateTaskStatus = (index, e) => {
     const updatedTodoList = [...todoList[currentTodoList]]; // Create a new copy of the tasks array
     updatedTodoList[index].status = e.target.checked ? "done" : "undone";
-
     const updatedList = { ...todoList };
     updatedList[currentTodoList] = updatedTodoList; // Update the specific todo list
-
+    const hasUndone = updatedTodoList.some((task) => task.status === "undone");
+    !hasUndone ? setShow(true) : null;
     setTodoList(updatedList);
   };
+
+  const deleteCompletedTask = () => {
+    const updatedTodoList = { ...todoList };
+    console.log(delete updatedTodoList[currentTodoList]);
+    console.log(updatedTodoList);
+    // delete updatedTodoList[currentTodoList];
+    setTodoList(updatedTodoList);
+    setCurrentTodoList(null);
+    setListDeleted(true);
+    handleClose();
+  };
+
+  const handleClose = () => setShow(false);
+
   const taskMenuController = () => {
     setOpenSideBar(!openSideBar);
   };
@@ -194,6 +223,18 @@ function App() {
             </div>
           </Col>
         </Row>
+        <Modal show={show} onHide={handleClose} backdrop='static' centered>
+          <ModalHeader closeButton>Completed Todolist</ModalHeader>
+          <ModalBody className='text-center'>
+            Woohoo, Todo List Completed! <br />
+            Delete completed List
+          </ModalBody>
+          <ModalFooter className='bg-dark'>
+            <Button variant='outline-primary' onClick={deleteCompletedTask}>
+              Delete <i className='bi bi-archive-fill'></i>{" "}
+            </Button>
+          </ModalFooter>
+        </Modal>
       </Container>
     </>
   );
