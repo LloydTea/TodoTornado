@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"  # Specify your build command here
+  publish = "dist"           # Specify the directory to publish
+
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200

@@ -222,6 +222,24 @@ function App() {
               ) : null}
             </div>
           </Col>
+          <Col md={12}>
+            <div className='gap-3 d-block text-center py-4'>
+              <a
+                className='btn btn-primary mx-2'
+                href='https://lloydtea.pro/'
+                rel='noreferrer'
+                target='_blank'>
+                Author <i className='bi bi-person-lines-fill'></i>
+              </a>
+              <a
+                className='btn btn-warning mx-2'
+                href='https://github.com/LloydTea/TodoTornado'
+                rel='noreferrer'
+                target='_blank'>
+                Git Repo <i className='bi bi-github'></i>
+              </a>
+            </div>
+          </Col>
         </Row>
         <Modal show={show} onHide={handleClose} backdrop='static' centered>
           <ModalHeader closeButton>Completed Todolist</ModalHeader>
